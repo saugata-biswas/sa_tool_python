@@ -18,6 +18,11 @@ class SATool:
         self.D = graph.to_directed()
         self.variables, self.constraints = nx.bipartite.sets(self.G)
         Y = list(self.variables)
+#        print list(self.variables)
+#        print list(self.constraints)
+#        print self.G.node[Y[0]]['bipartite']
+        
+        # just to put constraints in self.constraints and variables in self.variables
         if (self.G.node[Y[0]]['bipartite'] == 1):
             X = self.constraints
             self.constraints = self.variables
@@ -26,7 +31,9 @@ class SATool:
     def calculate_maximum_matching(self):
         try:
             self.max_match_dict = nx.algorithms.bipartite.maximum_matching(self.G)
+            #print self.max_match_dict
             self.max_match_list = list(self.max_match_dict.items())
+            #print self.max_match_list
         except:
             print "Networkx Development version required for calculationg maximum matching"
             print "Please read Installation instructions "
@@ -56,7 +63,7 @@ class SATool:
         self.calculate_maximum_matching()
         #Finding unmatched constratints
         self.unmatched_constraints =  self.constraints - set(self.max_match_dict.keys())
-
+        #print self.unmatched_constraints
         self.orientation_graph = []
 
         for e in self.max_match_list:
@@ -76,7 +83,8 @@ class SATool:
         pos = dict()
         pos.update( (n, (1, i)) for i, n in enumerate(self.constraints) ) # put nodes from self.variables at x=1
         pos.update( (n, (2, i)) for i, n in enumerate(self.variables) ) # put nodes from self.constraints at x=2
-    
+        #print pos # creates a tuple for each of the constraints and variables
+        
         fig, ax1 = plt.subplots(nrows=1, ncols=1, figsize=(8,8))
         # nodes
         nx.draw_networkx_nodes(self.G,pos,ax=ax1,
